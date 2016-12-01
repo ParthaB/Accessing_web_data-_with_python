@@ -1,1 +1,2 @@
-# Accessing_web_data-_with_python
+# REPO FOR COURSERA COURSE "ACCESSING WEB DATA WITH PYTHON".
+

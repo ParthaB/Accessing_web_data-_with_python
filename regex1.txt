@@ -1,0 +1,162 @@
+In computing, a regular expression, also referred to as "regex",
+or "regexp", provides a concise and flexible means for matching
+strings of text, such as particular charecters, words, or patterns
+of charecters. A regular expression is written in a formal language that can be interpreted by a regular expression processor.
+It is a programming language onto itself.
+It is a language of charecters.
+
+******************************************************************
+Implementations and running times
+
+There are at least three different algorithms that decide whether and how a given regex matches a string.
+
+The oldest and fastest relies on a result in formal language theory that allows every nondeterministic finite automaton (NFA) to be transformed into a deterministic finite automaton (DFA). The DFA can be constructed explicitly and then run on the resulting input string one symbol at a time. Constructing the DFA for a regular expression of size m has the time and memory cost of O(2m), but it can be run on a string of size n in time O(n).
+
+An alternative approach is to simulate the NFA directly, essentially building each DFA state on demand and then discarding it at the next step. This keeps the DFA implicit and avoids the exponential construction cost, but running cost rises to O(mn). The explicit approach is called the DFA algorithm and the implicit approach the NFA algorithm. Adding caching to the NFA algorithm is often called the "lazy DFA" algorithm, or just the DFA algorithm without making a distinction. These algorithms are fast, but using them for recalling grouped subexpressions, lazy quantification, and similar features is tricky.
+
+The third algorithm is to match the pattern against the input string by backtracking. This algorithm is commonly called NFA, but this terminology can be confusing. Its running time can be exponential, which simple implementations exhibit when matching against expressions like (a|aa)*b that contain both alternation and unbounded quantification and force the algorithm to consider an exponentially increasing number of sub-cases. This behavior can cause a security problem called Regular expression Denial of Service.
+
+Although backtracking implementations only give an exponential guarantee in the worst case, they provide much greater flexibility and expressive power. For example, any implementation which allows the use of backreferences, or implements the various extensions introduced by Perl, must include some kind of backtracking. Some implementations[which?] try to provide the best of both algorithms by first running a fast DFA algorithm, and revert to a potentially slower backtracking algorithm only when a backreference is encountered during the match.
+
+***************************************************************
+Lazy matching
+
+The three common quantifiers (*, + and ?) are greedy by default because they match as many characters as possible.[28] The regex ".*" applied to the string
+
+"Ganymede," he continued, "is the largest moon in the Solar System."
+
+matches the entire sentence instead of matching only Ganymede, within the first pair of quotations. The aforementioned quantifiers may therefore be made lazy or minimal, matching as few characters as possible, by appending a question mark: ".*"? matches only Ganymede, within the first pair of quotations.
+
+*****************************************************************
+Python implementation
+
+import re, or import regex
+re.search()-- if a string matches a regular expression, similar to 
+using the find() method for string.
+re.findall()-- extracts protions of a string that match your regular expression similar to a combination of slicing: var[5:10] and find().
+
+*****************************************************************
+using re.search() like find()
+
+handle = open('regex1.txt')
+for line in handle:
+	line = line.rstrip() #rstrip() to clear the whitespaces 
+	if line.find('The') >= 0:
+		print line
+
+import re
+handle = open('regex1.txt')
+for line in handle:
+	line = line.rstrip() #rstrip() to clear the whitespaces 
+	if re.search('The', line):
+	print line
+
+******************************************************************
+Starts with 'The'
+
+handle = open('regex1.txt')
+for line in handle:
+	line = line.rstrip() #rstrip() to clear the whitespaces 
+	if line.startswith('The'):
+		print line
+
+import re
+handle = open('regex1.txt')
+for line in handle:
+	line = line.rstrip() #rstrip() to clear the whitespaces 
+	if re.search('^The', line):	#'^' is a special char to find all
+								#beginning with 'The'
+	print line
+
+*******************************************************************
+wildcard charecters: ^X.*:
+
+******************************
+above programs should at least find the following three lines.
+******************************
+
+The dot chatecter matches any charecter
+The asterik means 'any number of times', or 'zero or more times'
+
+So ^X.*: means-- match 'X' at the start of the line, match any charecter, as many times it appears, followed by a colon.
+
+******************************************************************
+^			Matches the beginning of a line
+$			Matches the end of the line
+.			Matches any character
+\s			Matches whitespace
+\S			Matches any non-whitespace character
+*			Repeats a character zero or more times
+*?			Repeats a character zero or more times (non-greedy)
++			Repeats a character one or more times
++?			Repeats a character one or more times (non-greedy)
+[aeiou]		Matches a single character in the listed set
+[^XYZ]		Matches a single character not in the listed set
+[a-z0-9]	The set of characters can include a range
+(			Indicates where string extraction is to start
+)			Indicates where string extraction is to end
+******************************************************************
+
+so ^X-\S+: means-- finds all that starts with 'X-', any non-blank characters, at least one or more time, ending with a colon.
+
+******************************************************************
+
+when we use re.findall(), it returns a list of zero or more sub-strings that match the regular expression.
+
+import re
+x = 'My 2 favorite numbers are 7 and 66'
+y = re.findall('[0-9]+', x)
+print y
+
+#Output:
+#['2', '7', '66']
+
+These matching algoritms are greedy. 
+
+import re
+x = 'From: Using the: character:'
+y = re.findall('^F.+:', x)
+
+#Start from F, match any one or more characters, ending with a
+#colon. Greedy finds 'From:' & 'From: Using the: character', but
+#chooses to select the largest string.
+
+print y
+
+#output:
+#From: Using the characters:
+
+*****************************************************************
+non-greedy method with '?'
+
+import re
+x = 'From: Using the: character:'
+y = re.findall('^F.+?:', x)
+
+#Start from F, match any one or more characters, ending with a
+#colon. Non-greedy(?) finds 'From:' & 'From: Using the: character', #but chooses to stop at the first colon.
+
+print y
+
+#output:
+#From:
+
+******************************************************************
+
+x = 'From Stephen.marquisterdabili@uct.ac.za Sat Jan 5 09:14:16'
+y = re.findall('\S+@\S+', x)
+
+#greedy is a friend here. Find '@', push out on both sides, find #all the non-blank characters, stop at a blank.
+
+print y
+****************************
+More refined--
+
+y = re.findall('^From (\S+@\S+)', x)
+
+#Match starting with 'From', then a whitespace, '(' means start #the search for @', push out on both sides, find #all the #non-blank characters, stop at a blank, ')' end the search.
+
+print y
+
+Output:
+['Stephen.marquisterdabili@uct.ac.za']

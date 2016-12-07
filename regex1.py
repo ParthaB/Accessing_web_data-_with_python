@@ -73,7 +73,7 @@ print y
 #['Stephen.marquisterdabili@uct.ac.za']
 '''
 
-'''
+
 handle = open('mbox-short.txt')
 
 numlist = list()
@@ -88,7 +88,7 @@ print 'Maximum:', max(numlist)
 
 #Output:
 #Maximum = 0.9907
-'''
+
 
 '''
 #test
